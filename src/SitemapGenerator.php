@@ -209,7 +209,7 @@ class SitemapGenerator
     {
         $this->baseURL = rtrim($baseURL, '/');
 
-		if ($searchEngines !== null) {
+		if ($searchEngines !== null && is_array($searchEngines)) {
 			$this->searchEngines = $searchEngines;
 		}
 

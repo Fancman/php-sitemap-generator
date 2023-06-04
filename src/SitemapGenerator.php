@@ -205,9 +205,13 @@ class SitemapGenerator
      * @param FileSystem|null $fs
      * @param Runtime|null $runtime
      */
-    public function __construct(string $baseURL, string $basePath = "", FileSystem $fs = null, Runtime $runtime = null)
+    public function __construct(string $baseURL, string $basePath = "", $searchEngines = null, FileSystem $fs = null, Runtime $runtime = null)
     {
         $this->baseURL = rtrim($baseURL, '/');
+
+		if ($searchEngines !== null) {
+			$this->searchEngines = $searchEngines;
+		}
 
         if ($fs === null) {
             $this->fs = new FileSystem();
@@ -633,11 +637,9 @@ class SitemapGenerator
                 );
             }
             $responseContent = $this->runtime->curl_exec($curlResource);
-            if ($responseContent == false) {
-                throw new RuntimeException(
-                    "failed to run curl_exec, error: " . $this->runtime->curl_error($curlResource)
-                );
-            }
+			
+            if ($responseContent == false) continue;
+
             $response = $this->runtime->curl_getinfo($curlResource);
             $submitSiteShort = array_reverse(explode(".", parse_url($searchEngines[$i], PHP_URL_HOST)));
             $result[] = [
